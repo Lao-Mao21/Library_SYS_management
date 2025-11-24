@@ -59,7 +59,7 @@
                                     <th class="px-4 py-3 text-center text-sm font-semibold text-neutral-700 dark:text-neutral-300">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-neutral-200 dark:divide-neutral-700">
+                            <tbody class="divide-y divide-neutral-200 dark:divide-neutral-700 border-r border-l border-neutral-200 dark:border-neutral-700">
                                 @forelse($categories as $category)
                                     <tr class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50" id="category-row-{{ $category->id }}">
                                         <td class="px-4 py-3 text-center text-sm text-neutral-600 dark:text-neutral-400">{{ $loop->iteration }}</td>

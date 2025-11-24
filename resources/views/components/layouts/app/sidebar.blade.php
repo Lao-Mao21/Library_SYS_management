@@ -17,11 +17,11 @@
 
                     <flux:navlist.item icon="book-open" :href="route('categories.index')" :current="request()->routeIs('categories.*')" wire:navigate>{{ __('Categories') }}</flux:navlist.item>
 
-                    <flux:navlist.item icon="home" :href="route('books.trashed')" :current="request()->routeIs('books.trashed')" wire:navigate>
+                    <flux:navlist.item icon="trash" :href="route('books.trashed')" :current="request()->routeIs('books.trashed')" wire:navigate>
                         {{ __('Trashed Books') }}
                     </flux:navlist.item>
 
-                    <flux:navlist.item icon="home" :href="route('categories.trashed')" :current="request()->routeIs('categories.trashed')" wire:navigate>
+                    <flux:navlist.item icon="trash" :href="route('categories.trashed')" :current="request()->routeIs('categories.trashed')" wire:navigate>
                         {{ __('Trashed Categories') }}
                     </flux:navlist.item>
 

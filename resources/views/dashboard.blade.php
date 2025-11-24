@@ -11,38 +11,38 @@
         
         <!-- Stats Cards -->
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
+            <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-linear-to-r from-neutral-100 via-blue-400 to-blue-700 p-6 dark:border-neutral-700 dark:bg-linear-to-r dark:from-gray-800 dark:via-blue-700 dark:to-blue-400">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Books</p>
+                        <p class="text-sm font-medium text-black dark:text-white">Total Books</p>
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $books->count() }}</h3>
                     </div>
-                    <div class="rounded-full bg-blue-100 p-3 dark:bg-blue-900/30">
-                        <i class="fa-solid fa-book p-2 h-8 w-8 text-center text-blue-600 dark:text-indigo-400"></i>
+                    <div class="rounded-full bg-indigo-100 p-3 dark:border-neutral-700 dark:bg-blue-800/80">
+                        <i class="fa-solid fa-book p-2 h-8 w-8 text-center text-blue-600 dark:text-white"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
+            <div class="relative overflow-hidden rounded-xl border border-neutral-200 p-6 dark:border-neutral-700 bg-linear-to-r from-emerald-500 via-teal-500 to-green-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Total Categories</p>
+                        <p class="text-sm font-medium text-black dark:text-white">Total Categories</p>
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">{{ $categories->count() }}</h3>
                     </div>
-                    <div class="rounded-full bg-green-100 p-3 dark:bg-green-900/30">
-                        <i class="fa-solid fa-list text-center p-2 h-8 w-8 text-green-600 dark:text-green-400"></i>
+                    <div class="rounded-full bg-green-100 p-3 dark:bg-green-800/80">
+                        <i class="fa-solid fa-list text-center p-2 h-8 w-8 text-green-600 dark:text-white"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
+            <div class="relative overflow-hidden rounded-xl border border-neutral-200 p-6 dark:border-neutral-700 bg-linear-to-r from-pink-500 via-red-500 to-orange-700">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm font-medium text-neutral-600 dark:text-neutral-400">Best Category</p>
+                        <p class="text-sm font-medium text-black dark:text-white">Best Category</p>
                         <h3 class="mt-2 text-3xl font-bold text-neutral-900 dark:text-neutral-100">Fiction</h3>
                     </div>
-                    <div class="rounded-full bg-purple-100 p-3 dark:bg-purple-900/30">
-                         <i class="fa-solid fa-fire text-center p-2 h-8 w-8 text-amber-600 dark:text-amber-400"></i>
+                    <div class="rounded-full bg-purple-100 p-3 dark:bg-orange-800/80">
+                         <i class="fa-solid fa-fire text-center p-2 h-8 w-8 text-orange-600 dark:text-orange-300"></i>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
         <!-- Book Management Section -->
         <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
             <div class="flex h-full flex-col p-6">
-                <!-- Add New Student Form -->
+                <!-- Add New Book Form -->
                 <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Book</h2>
                     <form action="{{ route('books.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
@@ -105,14 +105,14 @@
                                 <p class="mt-1 text-xs text-red-600"> {{ $message }} </p>
                             @enderror
                         </div>
-                        <!-- NEW: Dropdown -->
+                        
                         <div class="md:col-span-1">
                             <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Category</label>
                             <select name="category_id" class="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100">
                                 <option value="">Select a Category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                                        {{ $category->name }} ({{ $category->description }})
+                                        {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
@@ -147,7 +147,7 @@
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-neutral-200 border-neutral-300 border-2 dark:border-neutral-700 dark:divide-neutral-700">
+                            <tbody class="divide-y divide-neutral-200 border-neutral-200 border dark:border-neutral-700 dark:divide-neutral-700">
                                 @forelse($books as $book)
                                     <tr>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->id }}</td>
@@ -155,11 +155,15 @@
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->author }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->isbn }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->publication_year }}</td>
-                                        <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->category->name ?? 'N/A' }}</td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-green-100 text-black dark:bg-green-700 dark:text-white">
+                                                {{ $book->category->name ?? 'N/A' }}
+                                            </span>
+                                        </td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->publisher }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->page_count }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->language }}</td>
-                                        <td class="px-4 py-3 text-sm text-center border-2 border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
+                                        <td class="px-4 py-3 text-sm text-center border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
                                             <button onclick="openEditModal({{ $book->id }})" class="text-blue-600 hover:underline transition-colors hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-400">Edit</button>
                                             {{-- <span class="mx-1 text-neutral-400">|</span> --}}
                                             <button 
