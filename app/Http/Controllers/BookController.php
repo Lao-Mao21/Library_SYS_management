@@ -130,10 +130,17 @@ class BookController extends Controller
     public function forceDelete($id)
     {
         $book = Book::findOrFail($id);
+        if ($book->image) {
+            $imagePath = public_path('images/' . $book->image);
+            if (File::exists($imagePath)) {
+                File::delete($imagePath);
+            }
+        }
+
         $book->delete(); // This will permanently delete
         
         return redirect()->route('books.trashed')
-            ->with('success', 'Book permanently deleted.');
+            ->with('success', 'Book & Cover Image permanently deleted.');
     }
 
     public function exportPDF(Request $request)
