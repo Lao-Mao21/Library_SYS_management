@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/books/{book}/restore', [BookController::class, 'restore'])->name('books.restore');
     Route::post('/books/{book}/delete', [BookController::class, 'destroy'])->name('books.destroy'); 
     Route::delete('/books/{book}/force-delete', [BookController::class, 'forceDelete'])->name('books.force-delete');
+    Route::get('/books/export', [BookController::class, 'exportPDF'])->name('books.export'); //exportpdf
 });
 
 Route::middleware(['auth'])->group(function () {

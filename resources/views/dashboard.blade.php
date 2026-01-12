@@ -54,7 +54,7 @@
                 <!-- Add New Book Form -->
                 <div class="mb-6 rounded-lg border border-neutral-200 bg-neutral-50 p-6 dark:border-neutral-700 dark:bg-neutral-900/50">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New Book</h2>
-                    <form action="{{ route('books.store') }}" method="POST" class="grid gap-4 md:grid-cols-2">
+                    <form action="{{ route('books.store') }}" method="POST" class="grid gap-4 md:grid-cols-2" enctype="multipart/form-data">
                         @csrf
                         <div>
                             <label class="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Title</label>
@@ -120,6 +120,12 @@
                                 <p class="mt-1 text-xs text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700">Book Cover Image</label>
+                            <input type="file" name="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+
                         <div class="md:col-span-2">
                             <button type="submit" class="rounded-lg bg-blue-700 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 Add Book
@@ -132,6 +138,48 @@
                 <div class="flex-1 overflow-auto">
                     <h2 class="mb-4 text-lg font-semibold text-neutral-900 dark:text-neutral-100">Book List</h2>
                     <div class="overflow-x-auto">
+                        <div id="searchresults" class="flex justify-between items-center mb-6 px-1 py-1 rounded-lg">
+                            <form action="{{ route('books.index') }}#searchresults" method="GET" class="flex gap-2">
+                                <input type="text" name="search" value="{{ request('search') }}" 
+                                    placeholder="Search title or author..." 
+                                    class="border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500">
+                                    Search
+                                </button>
+                                @if(request('search'))
+                                    <a href="{{ route('books.index') }}#searchresults" class="text-white border border-neutral-300 hover:text-red-400 hover:border-red-400 rounded-md py-2 px-2 hover:underline transform transition-colors ease-in-out duration-300">Clear</a>
+                                @endif  
+                                <div class="relative min-w-[200px]">
+                                    <select name="category" 
+                                            id="category"
+                                            onchange="this.form.submit()" 
+                                            class="block w-full px-4 py-2.5 border bg-neutral-800 border-neutral-500 text-neutral-300 text-sm rounded-xl shadow-sm 
+                                                appearance-none cursor-pointer
+                                                focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:outline-none
+                                                transition-all duration-200 hover:border-gray-300">
+                                        <option value="">All Categories</option>
+                                        
+                                        @foreach($categories as $cat)
+                                            <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>
+                                                {{ $cat->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 pt-0 text-gray-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <a href="{{ route('books.export', ['search' => request('search')]) }}" 
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg flex items-center shadow-md">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                Export to PDF
+                            </a>
+                        </div>
                         <table class="w-full min-w-full">
                             <thead>
                                 <tr class="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/50">
@@ -150,6 +198,16 @@
                             <tbody class="divide-y divide-neutral-200 border-neutral-200 border dark:border-neutral-700 dark:divide-neutral-700">
                                 @forelse($books as $book)
                                     <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            @if($book->image && file_exists(public_path('images/' . $book->image)))
+                                                <img src="{{ asset('images/' . $book->image) }}" 
+                                                    class="w-12 h-16 object-cover rounded shadow-sm">
+                                            @else
+                                                <div class="w-12 h-16 bg-gray-100 flex items-center justify-center rounded text-gray-400 text-[10px] border border-dashed border-gray-300">
+                                                    No Cover
+                                                </div>
+                                            @endif
+                                        </td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->id }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->title }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->author }}</td>
@@ -164,7 +222,7 @@
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->page_count }}</td>
                                         <td class="px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300">{{ $book->language }}</td>
                                         <td class="px-4 py-3 text-sm text-center border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300">
-                                            <button onclick="openEditModal({{ $book->id }})" class="text-blue-600 hover:underline transition-colors hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-400">Edit</button>
+                                            <button onclick="openEditModal({{ $book->id }}, '{{ $book->image }}')" class="text-blue-600 hover:underline transition-colors hover:text-blue-700 dark:text-blue-500 dark:hover:text-blue-400">Edit</button>
                                             {{-- <span class="mx-1 text-neutral-400">|</span> --}}
                                             <button 
                                                 onclick="openDeleteModal({{ $book->id }}, '{{ addslashes($book->title) }}')" 
@@ -191,10 +249,20 @@
                         <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700">
                             <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Edit Book</h3>
                         </div>
-                        <form id="editBookForm" method="POST">
+                        <form id="editBookForm" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
                             <div class="p-6 space-y-4 max-h-96 overflow-y-auto">
+                                <div class="mb-4">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-2">Book Cover Image</label>
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex-1">
+                                            <input type="file" name="image" 
+                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                            <p class="mt-2 text-xs text-gray-400">Select a file to upload a new cover. Max 2MB.</p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label for="edit_title" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Title *</label>
