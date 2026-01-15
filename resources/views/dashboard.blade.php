@@ -121,15 +121,14 @@
                             @enderror
                         </div>
 
-                        <div class="mt-4">
-                            <label class="block text-sm font-medium text-gray-700">Book Cover Image</label>
-                            <input type="file" name="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <button type="submit" class="rounded-lg bg-blue-700 px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <div class="flex w-full space-x-4 h-auto md:col-span-2">
+                            <button type="submit" class="rounded-lg bg-blue-700 px-6 py-5 text-sm font-medium text-white transition-colors hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                                 Add Book
                             </button>
+                            <div class="">
+                                <label class="block text-sm font-medium text-gray-700">Book Cover Image</label>
+                                <input type="file" name="image" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -183,6 +182,7 @@
                         <table class="w-full min-w-full">
                             <thead>
                                 <tr class="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900/50">
+                                    <th class="px-4 py-3 text-center text-sm font-semibold text-neutral-700 dark:text-neutral-300">Book Cover</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">#</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Title</th>
                                     <th class="px-4 py-3 text-left text-sm font-semibold text-neutral-700 dark:text-neutral-300">Author</th>
@@ -257,9 +257,23 @@
                                     <label class="block text-sm font-semibold text-gray-600 mb-2">Book Cover Image</label>
                                     <div class="flex items-center gap-4">
                                         <div class="flex-1">
-                                            <input type="file" name="image" 
+                                            <input type="file" name="image" id="imageInput"
                                                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                                             <p class="mt-2 text-xs text-gray-400">Select a file to upload a new cover. Max 2MB.</p>
+                                        </div>
+                                        <!-- preview -->
+                                        <div class="flex flex-col items-center">
+                                            <p class="text-xs text-gray-500 mb-2 font-medium">Current Cover</p>
+                                            <div id="currentCoverPreview" class="w-16 h-24 bg-gray-100 border border-dashed border-gray-300 rounded inline-flex items-center justify-center text-gray-400 text-[10px]">
+                                                No Cover
+                                            </div>
+                                        </div>
+                                        <!-- new cover review -->
+                                        <div class="flex flex-col items-center">
+                                            <p class="text-xs text-gray-500 mb-2 font-medium">New Cover Preview</p>
+                                            <div id="newCoverPreview" class="w-16 h-24 bg-gray-50 border-2 border-dashed border-blue-300 rounded inline-flex items-center justify-center text-gray-400 text-[10px]">
+                                                No Preview
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -395,6 +409,8 @@
                         const response = await fetch(`/books/${bookId}/edit`);
                         const book = await response.json();
                         
+                        console.log('Book data:', book);
+                        
                         // Populate form fields
                         document.getElementById('edit_title').value = book.title || '';
                         document.getElementById('edit_author').value = book.author || '';
@@ -404,6 +420,22 @@
                         document.getElementById('edit_publisher').value = book.publisher || '';
                         document.getElementById('edit_page_count').value = book.page_count || '';
                         document.getElementById('edit_language').value = book.language || '';
+                        
+                        // Set current cover preview
+                        const currentCoverPreview = document.getElementById('currentCoverPreview');
+                        if (book.image) {
+                            const imageUrl = `/images/${book.image}`;
+                            console.log('Loading image from:', imageUrl);
+                            currentCoverPreview.innerHTML = `<img src="${imageUrl}" alt="Book Cover" class="w-full h-full object-cover rounded">`;
+                        } else {
+                            currentCoverPreview.innerHTML = '<span class="text-gray-400 text-[10px]">No Cover</span>';
+                        }
+                        
+                        // Reset new cover preview
+                        document.getElementById('imageInput').value = '';
+                        const newCoverPreview = document.getElementById('newCoverPreview');
+                        newCoverPreview.classList.add('hidden');
+                        newCoverPreview.innerHTML = '<span class="text-gray-400 text-[10px]">No Preview</span>';
                         
                     } catch (error) {
                         console.error('Error fetching book data:', error);
@@ -429,6 +461,24 @@
                     if (event.key === 'Escape') {
                         closeEditModal();
                         closeDeleteModal();
+                    }
+                });
+
+                // Handle image file input preview
+                document.getElementById('imageInput').addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    const newCoverPreview = document.getElementById('newCoverPreview');
+                    
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            newCoverPreview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="w-full h-full object-cover rounded">`;
+                            newCoverPreview.classList.remove('hidden');
+                        };
+                        reader.readAsDataURL(file);
+                    } else {
+                        newCoverPreview.classList.add('hidden');
+                        newCoverPreview.innerHTML = '<span class="text-gray-400 text-[10px]">No Preview</span>';
                     }
                 });
                 </script>

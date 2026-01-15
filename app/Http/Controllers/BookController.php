@@ -81,6 +81,7 @@ class BookController extends Controller
             'publisher' => $book->publisher,
             'page_count' => $book->page_count,
             'language' => $book->language,
+            'image' => $book->image,
         ]);
     }
 

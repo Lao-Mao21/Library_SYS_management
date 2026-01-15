@@ -30,11 +30,6 @@
                 <td>{{ $book->title }}</td>
                 <td>{{ $book->author }}</td>
                 <td>{{ $book->status ?? 'Available' }}</td>
-                <td>
-                    @if($book->image)
-                        <img src="{{ public_path('storage/' . $book->image) }}" width="50">
-                    @endif
-                </td>
             </tr>
             @endforeach
         </tbody>
