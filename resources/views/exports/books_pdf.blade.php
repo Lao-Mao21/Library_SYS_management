@@ -2,12 +2,14 @@
 <html>
 <head>
     <style>
-        body { font-family: 'Helvetica', sans-serif; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #4a5568; padding-bottom: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background-color: #4a5568; color: white; padding: 10px; text-align: left; }
-        td { border-bottom: 1px solid #edf2f7; padding: 10px; }
-        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 10px; color: #718096; }
+        body { font-family: 'Helvetica', sans-serif; color: #333; margin: 0; padding: 15px; }
+        .header { text-align: center; border-bottom: 2px solid #4a5568; padding-bottom: 8px; margin-bottom: 10px; }
+        .header h2 { margin: 0; font-size: 16px; }
+        .header p { margin: 0; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { background-color: #4a5568; color: white; padding: 5px; text-align: left; font-size: 10px; }
+        td { border-bottom: 1px solid #edf2f7; padding: 4px 5px; }
+        .footer { position: fixed; bottom: 0; width: 100%; text-align: right; font-size: 9px; color: #718096; }
     </style>
 </head>
 <body>
@@ -19,17 +21,27 @@
     <table>
         <thead>
             <tr>
+                <th>#</th>
                 <th>Title</th>
                 <th>Author</th>
-                <th>Status</th>
+                <th>Publication year</th>
+                <th>ISBN</th>
+                <th>Category</th>
+                <th>Publisher</th>
+                <th>Language</th>
             </tr>
         </thead>
         <tbody>
             @foreach($books as $book)
             <tr>
+                <td>{{ $book->id }}</td>
                 <td>{{ $book->title }}</td>
                 <td>{{ $book->author }}</td>
-                <td>{{ $book->status ?? 'Available' }}</td>
+                <td>{{ $book->publication_year }}</td>
+                <td>{{ $book->isbn }}</td>
+                <td>{{ $book->category->name ?? 'N/A' }}</td>
+                <td>{{ $book->publishe->name ?? 'N/A' }}</td>
+                <td>{{ $book->language }}</td>
             </tr>
             @endforeach
         </tbody>
